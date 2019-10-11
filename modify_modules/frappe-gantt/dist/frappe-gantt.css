@@ -119,10 +119,27 @@
       border-top-color: rgba(0, 0, 0, 0.8); }
       #gantt .gantt-title-view {
         float: left;
+        overflow: auto;
       }
       #gantt .gantt-title .title-li {
           text-overflow: ellipsis;
-          overflow: hidden;
+          overflow: visible;
           white-space: nowrap;
-          text-align: center;
+          text-align: left;
+          cursor: pointer;
+      }
+      #gantt .gantt-title .title-li.parent {
+        position: relative;
+      }
+      #gantt .gantt-title .title-li.parent::before {
+        position: absolute;
+        left:5px;
+        top:0;
+        content:"+";
+        /* width: 0;
+        height: 0;
+        border-top:10px solid red;
+        border-left:10px solid transparent;
+        border-bottom:10px solid transparent;
+        border-right:10px solid transparent; */
       }

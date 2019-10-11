@@ -3,9 +3,12 @@ import ReactDom from 'react-dom'
 
 import GanttDemo from '../demo/gantt'
 import HtmlDemo from '../demo/html/index.js'
-window.HtmlDemo = HtmlDemo
-window.ReactDom = ReactDom
+// window.HtmlDemo = HtmlDemo
+// window.ReactDom = ReactDom
 ReactDom.render(
   <GanttDemo />,
-  document.getElementById('root')
+  document.getElementById('root'),
+  function () {
+    console.log('渲染完成')
+  }
 )

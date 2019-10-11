@@ -11,6 +11,8 @@ export default class Gantt {
     constructor(wrapper, tasks, options) {
         this.setup_wrapper(wrapper);
         this.setup_options(options);
+        // 筛选一次，hidden
+        tasks = tasks.filter(item => !item.hidden)
         this.setup_tasks(tasks);
         // initialize with default view mode
         this.change_view_mode();
@@ -585,18 +587,42 @@ export default class Gantt {
     }
 
     make_title() {
-        this.gantt_title.style.width = this.options.title_width + 'px';
+        this.gantt_title.style.width = this.options.title_width + 'px'
         this.gantt_title.innerHTML = ''
         this.tasks.map(task => {
+            let padding = 20
             const div = document.createElement('div')
             const title_height = this.options.bar_height + this.options.padding + 'px'
-            div.classList.add('title-li');
+            div.classList.add('title-li')
+            div.onclick = () => this.trigger_event('click', [task])
+            if (task.dependencies instanceof Array && task.dependencies.length) {
+                task.dependencies.map(task_id => {
+                    let parent = $(`#${task_id}`)
+                    if (parent) {
+                        const number = Number(parent.style.paddingLeft.replace('px', ''))
+                        padding += number
+                        div.dataset.parentid = task_id
+
+                        // parent.onclick = null
+                        // parent.classList.add('parent')
+                        // parent.addEventListener('click', () => {
+                        //     this.trigger_event('fold', [task])
+                        // })
+                    }
+                })
+            }
+            if (task.type === 'fold') {
+                div.onclick = null
+                div.classList.add('parent')
+                div.addEventListener('click', () => {
+                    this.trigger_event('fold', [task])
+                })
+            }
             div.innerHTML = task.name
-            div.style.height = title_height
+            div.id = task.id
             div.style.lineHeight = title_height
-            div.addEventListener('click', _ => {
-                this.trigger_event('click', [task])
-            })
+            div.style.paddingLeft = padding + 'px'
+
             this.gantt_title.appendChild(div)
         });
     }
