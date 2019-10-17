@@ -7,7 +7,7 @@ import './index.less'
 
 const data = [
   {
-    id: 'mr',
+    id: 'parent-31',
     name: '默认列表1',
     children: [
       {
@@ -37,7 +37,7 @@ const data = [
       }, {
         id: 'xz-2',
         name: '新增任务2',
-        start: '2016-11-2',
+        start: '2016-11-2 16:25:55',
         end: '2016-11-10',
         progress: 100,
       }, {
@@ -114,7 +114,7 @@ export default class GanttDemo extends Component {
 
     data.map(item => {
       item.children instanceof Array &&
-        item.children.length > 0 ? (function () {
+        item.children.length > 0 && (function () {
           item.type = 'fold'
           let start = null, end = null, itemArray = []
 
@@ -128,8 +128,8 @@ export default class GanttDemo extends Component {
           itemArray.unshift({ ...item, start, end, progress: 100 })
           array.push(...itemArray)
         })()
-        :
-        array.push(item)
+        // :
+        // array.push(item)
     })
     console.log(array)
     this.ganttData = array

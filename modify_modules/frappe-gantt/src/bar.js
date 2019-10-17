@@ -101,7 +101,7 @@ export default class Bar {
             height: this.height,
             rx: this.corner_radius,
             ry: this.corner_radius,
-            class: 'bar-progress',
+            class: 'bar-progress' + (this.task.type ? ' fold' : ''),
             append_to: this.bar_group
         });
 
@@ -182,11 +182,7 @@ export default class Bar {
             }
 
             if (e.type === 'click') {
-                if (this.task.type === 'fold') {
-                    this.gantt.trigger_event('fold', [this.task]);
-                } else {
-                    this.gantt.trigger_event('click', [this.task]);
-                }
+                this.gantt.trigger_event('click', [this.task]);
             }
 
             this.gantt.unselect_all();

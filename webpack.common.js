@@ -7,6 +7,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const exWebpack = process.env.NODE_ENV === 'development' ?
   require('./webpack.dev') :
   require('./webpack.prod')
+
 const _webpack = {
   module: {
     rules: [
@@ -27,6 +28,15 @@ const _webpack = {
         ]
       },
       {
+        test: /\.sass$/,
+        // exclude: /node_modules/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          "css-loader",
+          "sass-loader"
+        ]
+      },
+      {
         test: /\.js$/,
         exclude: /node_modules/,
         use: [
@@ -34,7 +44,6 @@ const _webpack = {
             loader: 'babel-loader'
           },
           "babel-loader",
-          // "eslint-loader"
         ]
       }
     ]
@@ -46,16 +55,10 @@ const _webpack = {
   // },
   plugins: [
     new MiniCssExtractPlugin({
-      filename: '[name].css',
-      chunkFilename: '[id].css',
+      filename: '[name].[hash].css',
+      chunkFilename: '[id].[hash].css',
     }),
     // new BundleAnalyzerPlugin() // 查看打包后的体积比例
   ],
-  resolve: {
-    alias: {
-      modify_modules: path.join(__dirname, 'modify_modules')
-    }
-  }
 }
-console.log(path.join(__dirname, 'modify_modules'), '------------------')
 module.exports = merge(exWebpack, _webpack)

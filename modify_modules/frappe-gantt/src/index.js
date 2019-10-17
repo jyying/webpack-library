@@ -594,7 +594,11 @@ export default class Gantt {
             const div = document.createElement('div')
             const title_height = this.options.bar_height + this.options.padding + 'px'
             div.classList.add('title-li')
-            div.onclick = () => this.trigger_event('click', [task])
+            div.innerHTML = task.name
+            div.addEventListener('click', _ => {
+                this.trigger_event('click', [task])
+            })
+            // 左边间距距离计算
             if (task.dependencies instanceof Array && task.dependencies.length) {
                 task.dependencies.map(task_id => {
                     let parent = $(`#${task_id}`)
@@ -602,23 +606,20 @@ export default class Gantt {
                         const number = Number(parent.style.paddingLeft.replace('px', ''))
                         padding += number
                         div.dataset.parentid = task_id
-
-                        // parent.onclick = null
-                        // parent.classList.add('parent')
-                        // parent.addEventListener('click', () => {
-                        //     this.trigger_event('fold', [task])
-                        // })
                     }
                 })
             }
             if (task.type === 'fold') {
-                div.onclick = null
-                div.classList.add('parent')
-                div.addEventListener('click', () => {
+                const span = document.createElement('span')
+                span.classList.add('fold_span')
+                span.innerHTML = task.isFold ? '+' : '-'
+                span.addEventListener('click', () => {
                     this.trigger_event('fold', [task])
                 })
+                span.style.width = padding + 'px'
+                div.appendChild(span)
+                div.classList.add('parent')
             }
-            div.innerHTML = task.name
             div.id = task.id
             div.style.lineHeight = title_height
             div.style.paddingLeft = padding + 'px'

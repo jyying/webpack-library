@@ -8,7 +8,12 @@ for (let i = 0; i < 100; i++) {
     key: i.toString(),
     name: `Edrward ${i}`,
     age: 32,
+    age_options: [],
+    age_url: '',
+    age_relation: ['address'],
     address: `London Park no. ${i}`,
+    address_options: [],
+    address_url: '',
   });
 }
 

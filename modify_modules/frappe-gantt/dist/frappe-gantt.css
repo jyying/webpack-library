@@ -38,7 +38,12 @@
   user-select: none; }
 
 .gantt .bar-progress {
-  fill: #a3a3ff; }
+  fill: #a3a3ff; 
+}
+
+.gantt .fold {
+  fill: #ffbc00;
+}
 
 .gantt .bar-invalid {
   fill: transparent;
@@ -72,6 +77,8 @@
     fill: #a9b5c1; }
   .gantt .bar-wrapper:hover .bar-progress {
     fill: #8a8aff; }
+  .gantt .bar-wrapper:hover .fold.bar-progress {
+    fill: #f9cf24; }
   .gantt .bar-wrapper:hover .handle {
     visibility: visible;
     opacity: 1; }
@@ -79,6 +86,9 @@
     fill: #a9b5c1; }
   .gantt .bar-wrapper.active .bar-progress {
     fill: #8a8aff; }
+  .gantt .bar-wrapper.active .fold.bar-progress {
+    fill: #f9cf24;
+  }
 
 .gantt .lower-text, .gantt .upper-text {
   font-size: 12px;
@@ -131,15 +141,11 @@
       #gantt .gantt-title .title-li.parent {
         position: relative;
       }
-      #gantt .gantt-title .title-li.parent::before {
+      #gantt .gantt-title .title-li.parent .fold_span {
         position: absolute;
-        left:5px;
+        left:0;
         top:0;
-        content:"+";
-        /* width: 0;
-        height: 0;
-        border-top:10px solid red;
-        border-left:10px solid transparent;
-        border-bottom:10px solid transparent;
-        border-right:10px solid transparent; */
+        display: block;
+        height:100%;
+        text-align: center;
       }
