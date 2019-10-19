@@ -613,7 +613,8 @@ export default class Gantt {
                 const span = document.createElement('span')
                 span.classList.add('fold_span')
                 span.innerHTML = task.isFold ? '+' : '-'
-                span.addEventListener('click', () => {
+                span.addEventListener('click', (e) => {
+                    e.stopPropagation()
                     this.trigger_event('fold', [task])
                 })
                 span.style.width = padding + 'px'

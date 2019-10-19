@@ -9,6 +9,7 @@ const data = [
   {
     id: 'parent-31',
     name: '默认列表1',
+    className: '',
     children: [
       {
         id: 'mr-1',
@@ -27,18 +28,21 @@ const data = [
   }, {
     id: 'xz',
     name: '新增列表',
+    className: 'fold',
     children: [
       {
         id: 'xz-1',
         name: '新增任务1',
         start: '2016-10-1',
         end: '2016-10-20',
+        className: 'completed',
         progress: 100,
       }, {
         id: 'xz-2',
         name: '新增任务2',
         start: '2016-11-2 16:25:55',
         end: '2016-11-10',
+        className: 'delay',
         progress: 100,
       }, {
         id: 'xz-3',
@@ -53,6 +57,12 @@ const data = [
     id: 'none',
     name: '6测试无',
     children: [],
+  }, {
+    id: 'dl-1',
+    name: '独立任务1',
+    start: '2016-11-1',
+    end: '2016-11-11',
+    progress: 100,
   }
 ]
 
@@ -70,6 +80,7 @@ export default class GanttDemo extends Component {
       date_format: 'YYYY-MM-DD',
       language: 'en',
       title_width: 200,
+      arrow_stroke: 'red',
       on_click: task => {
         console.log(task)
       },
@@ -113,25 +124,27 @@ export default class GanttDemo extends Component {
     // this.ganttData = array
 
     data.map(item => {
-      item.children instanceof Array &&
+      item.children instanceof Array ?
         item.children.length > 0 && (function () {
           item.type = 'fold'
           let start = null, end = null, itemArray = []
 
           item.children.map(_item => {
-            start ? new Date(start).getTime() > new Date(_item.start).getTime() && (start = _item.start) : (start = _item.start)
-            end ? new Date(end).getTime() < new Date(_item.end).getTime() && (end = _item.end) : (end = _item.end)
-            // array.push({ ..._item, dependencies: [item.id] })
-            itemArray.push({ ..._item, dependencies: [item.id] })
+            if (_item.start && _item.end) {
+              start ? new Date(start).getTime() > new Date(_item.start).getTime() && (start = _item.start) : (start = _item.start)
+              end ? new Date(end).getTime() < new Date(_item.end).getTime() && (end = _item.end) : (end = _item.end)
+              // array.push({ ..._item, dependencies: [item.id] })
+              itemArray.push({ ..._item, dependencies: [item.id] })
+            }
           })
-          delete item.children
+          // delete item.children
           itemArray.unshift({ ...item, start, end, progress: 100 })
           array.push(...itemArray)
         })()
-        // :
-        // array.push(item)
+        :
+        array.push(item)
     })
-    console.log(array)
+    console.log(data)
     this.ganttData = array
     new Gantt("#gantt", array, this.ganttOptions)
   }

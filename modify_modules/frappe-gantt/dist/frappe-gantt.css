@@ -41,10 +41,6 @@
   fill: #a3a3ff; 
 }
 
-.gantt .fold {
-  fill: #ffbc00;
-}
-
 .gantt .bar-invalid {
   fill: transparent;
   stroke: #8D99A6;
@@ -77,8 +73,6 @@
     fill: #a9b5c1; }
   .gantt .bar-wrapper:hover .bar-progress {
     fill: #8a8aff; }
-  .gantt .bar-wrapper:hover .fold.bar-progress {
-    fill: #f9cf24; }
   .gantt .bar-wrapper:hover .handle {
     visibility: visible;
     opacity: 1; }
@@ -86,9 +80,6 @@
     fill: #a9b5c1; }
   .gantt .bar-wrapper.active .bar-progress {
     fill: #8a8aff; }
-  .gantt .bar-wrapper.active .fold.bar-progress {
-    fill: #f9cf24;
-  }
 
 .gantt .lower-text, .gantt .upper-text {
   font-size: 12px;

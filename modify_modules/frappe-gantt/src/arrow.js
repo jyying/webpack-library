@@ -26,7 +26,7 @@ export default class Arrow {
             this.gantt.options.header_height +
             this.gantt.options.bar_height +
             (this.gantt.options.padding + this.gantt.options.bar_height) *
-                this.from_task.task._index +
+            this.from_task.task._index +
             this.gantt.options.padding;
 
         const end_x = this.to_task.$bar.getX() - this.gantt.options.padding / 2;
@@ -34,7 +34,7 @@ export default class Arrow {
             this.gantt.options.header_height +
             this.gantt.options.bar_height / 2 +
             (this.gantt.options.padding + this.gantt.options.bar_height) *
-                this.to_task.task._index +
+            this.to_task.task._index +
             this.gantt.options.padding;
 
         const from_is_below_to =
@@ -82,8 +82,10 @@ export default class Arrow {
     }
 
     draw() {
+        const stroke = this.from_task.gantt.options.arrow_stroke
         this.element = createSVG('path', {
             d: this.path,
+            stroke,
             'data-from': this.from_task.task.id,
             'data-to': this.to_task.task.id
         });

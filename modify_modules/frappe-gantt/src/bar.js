@@ -94,6 +94,7 @@ export default class Bar {
 
     draw_progress_bar() {
         if (this.invalid) return;
+        const className = this.task.className || ''
         this.$bar_progress = createSVG('rect', {
             x: this.x,
             y: this.y,
@@ -101,7 +102,7 @@ export default class Bar {
             height: this.height,
             rx: this.corner_radius,
             ry: this.corner_radius,
-            class: 'bar-progress' + (this.task.type ? ' fold' : ''),
+            class: 'bar-progress ' + className,
             append_to: this.bar_group
         });
 

@@ -38,7 +38,8 @@
   user-select: none; }
 
 .gantt .bar-progress {
-  fill: #a3a3ff; }
+  fill: #a3a3ff; 
+}
 
 .gantt .bar-invalid {
   fill: transparent;
@@ -119,12 +120,23 @@
       border-top-color: rgba(0, 0, 0, 0.8); }
       #gantt .gantt-title-view {
         float: left;
+        overflow: auto;
       }
       #gantt .gantt-title .title-li {
           text-overflow: ellipsis;
-          overflow: hidden;
+          overflow: visible;
           white-space: nowrap;
-          text-align: center;
           text-align: left;
           cursor: pointer;
+      }
+      #gantt .gantt-title .title-li.parent {
+        position: relative;
+      }
+      #gantt .gantt-title .title-li.parent .fold_span {
+        position: absolute;
+        left:0;
+        top:0;
+        display: block;
+        height:100%;
+        text-align: center;
       }

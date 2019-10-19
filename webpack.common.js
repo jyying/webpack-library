@@ -55,7 +55,7 @@ const _webpack = {
   // },
   plugins: [
     new MiniCssExtractPlugin({
-      filename: '[name].[hash].css',
+      filename: '[name].css',
       chunkFilename: '[id].[hash].css',
     }),
     // new BundleAnalyzerPlugin() // 查看打包后的体积比例
