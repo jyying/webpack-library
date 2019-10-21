@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Gantt from 'frappe-gantt'
-import 'frappe-gantt/dist/frappe-gantt.css'
+// import 'frappe-gantt/dist/frappe-gantt.css'
 
 import './index.less'
 
