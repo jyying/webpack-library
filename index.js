@@ -1,4 +1,4 @@
-// import Gantt from 'frappe-gantt'
-import sortable from 'sortablejs'
+import Gantt from 'frappe-gantt'
+// import sortable from 'sortablejs'
 
-export default sortable
+export default Gantt

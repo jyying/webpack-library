@@ -593,21 +593,23 @@ export default class Gantt {
             let padding = 20
             const div = document.createElement('div')
             const title_height = this.options.bar_height + this.options.padding + 'px'
+            const dependencies = task.dependencies
             div.classList.add('title-li')
             div.innerHTML = task.name
             div.addEventListener('click', _ => {
                 this.trigger_event('click', [task])
             })
             // 左边间距距离计算
-            if (task.dependencies instanceof Array && task.dependencies.length) {
-                task.dependencies.map(task_id => {
-                    let parent = $(`#${task_id}`)
+            if (dependencies instanceof Array && dependencies.length) {
+                for (let i = 0; i < dependencies.length; i++) {
+                    let parent = $(`#${dependencies[i]}`)
                     if (parent) {
                         const number = Number(parent.style.paddingLeft.replace('px', ''))
                         padding += number
-                        div.dataset.parentid = task_id
+                        div.dataset.parentid = dependencies[i]
+                        break
                     }
-                })
+                }
             }
             if (task.type === 'fold') {
                 const span = document.createElement('span')
@@ -633,6 +635,7 @@ export default class Gantt {
         this.arrows = [];
         for (let task of this.tasks) {
             let arrows = [];
+            if (task.hiddenArrow) break
             arrows = task.dependencies
                 .map(task_id => {
                     const dependency = this.get_task(task_id);

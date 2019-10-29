@@ -4,67 +4,7 @@ import Gantt from 'frappe-gantt'
 
 import './index.less'
 
-
-const data = [
-  {
-    id: 'parent-31',
-    name: '默认列表1',
-    className: '',
-    children: [
-      {
-        id: 'mr-1',
-        name: '默认任务1',
-        start: '2016-12-1',
-        end: '2016-12-19',
-        progress: 100,
-      }, {
-        id: 'mr-2',
-        name: '默认任务2',
-        start: '2016-12-2',
-        end: '2016-12-10',
-        progress: 100,
-      }
-    ],
-  }, {
-    id: 'xz',
-    name: '新增列表',
-    className: 'fold',
-    children: [
-      {
-        id: 'xz-1',
-        name: '新增任务1',
-        start: '2016-10-1',
-        end: '2016-10-20',
-        className: 'completed',
-        progress: 100,
-      }, {
-        id: 'xz-2',
-        name: '新增任务2',
-        start: '2016-11-2 16:25:55',
-        end: '2016-11-10',
-        className: 'delay',
-        progress: 100,
-      }, {
-        id: 'xz-3',
-        name: '新增任务3',
-        start: '2016-11-1',
-        end: '2016-11-11',
-        progress: 100,
-        hidden: true,
-      }
-    ],
-  }, {
-    id: 'none',
-    name: '6测试无',
-    children: [],
-  }, {
-    id: 'dl-1',
-    name: '独立任务1',
-    start: '2016-11-1',
-    end: '2016-11-11',
-    progress: 100,
-  }
-]
+import data from './data.js'
 
 export default class GanttDemo extends Component {
 
@@ -104,59 +44,115 @@ export default class GanttDemo extends Component {
         type: 'fold',
       },
     ]
-    const array = []
-    // array.push(...tasks)
-    // const number = 20
-    // for (let i = 1; i < number; i++) {
-    //   array.push({
-    //     id: `Task${i}`,
-    //     name: `Redesign website${i}`,
-    //     start: `2016-11-${i}`,
-    //     end: `2016-12-${i}`,
-    //     progress: 100,
-    //     // dependencies: `Task${i - 1}`,
-    //     dependencies: ['Task-1']
-    //   })
-    // }
-
-    // new Gantt("#gantt", array, this.ganttOptions)
-
-    // this.ganttData = array
-
-    data.map(item => {
-      item.children instanceof Array ?
-        item.children.length > 0 && (function () {
-          item.type = 'fold'
-          let start = null, end = null, itemArray = []
-
-          item.children.map(_item => {
-            if (_item.start && _item.end) {
-              start ? new Date(start).getTime() > new Date(_item.start).getTime() && (start = _item.start) : (start = _item.start)
-              end ? new Date(end).getTime() < new Date(_item.end).getTime() && (end = _item.end) : (end = _item.end)
-              // array.push({ ..._item, dependencies: [item.id] })
-              itemArray.push({ ..._item, dependencies: [item.id] })
-            }
-          })
-          // delete item.children
-          itemArray.unshift({ ...item, start, end, progress: 100 })
-          array.push(...itemArray)
-        })()
-        :
-        array.push(item)
-    })
-    console.log(data)
+    const array = this.structureData(this.sortData(data))
     this.ganttData = array
     new Gantt("#gantt", array, this.ganttOptions)
   }
 
+  getTaskStatus = (data) => {
+    const taskIndiclass = ['success', 'warning', 'danger']
+    const { lights } = data
+    let scheduleflag = (lights && lights.scheduleflag == 1) ? 0 : 1
+    let statusflag = (lights && lights.statusflag == 1) ? 1 : 0
+    let className = taskIndiclass[scheduleflag]
+    statusflag == 1 && (className = 'completed')
+    return className
+  }
+
+  sortData = (data) => {
+    const datas = JSON.parse(JSON.stringify(data))
+    datas.map((item, index) => {
+      const array = []
+      const subArray = []
+      item.children.map(_item => {
+        _item.iid = _item.id
+        _item.id = `parent-${_item.id}-${index}`
+        let hasSubTask = false
+        if (_item.qzrwgroup) {
+          _item.dependencies = []
+          _item.qzrwgroup.map(s => {
+            const id = `parent-${s.id}-${index}`
+            _item.dependencies.push(id)
+            s.iid = s.id
+            s.id = id
+          })
+          array.push(..._item.qzrwgroup)
+        }
+
+        if (_item.subtasklist instanceof Array && _item.subtasklist.length) {
+          let time
+          hasSubTask = true
+          _item.subtasklist.map(s => {
+            const id = _item.id
+            time = s.time.split('/')
+            s.start = time[0]
+            s.end = time[1]
+            s.name = s.sname
+            s.PARENTID = id
+            s.dependencies = [id]
+            s.iid = s.id
+            s.hiddenArrow = true
+          })
+          subArray.push(..._item.subtasklist)
+        }
+        hasSubTask && (_item.type = 'fold')
+      })
+
+      item.children.unshift(...array)
+      item.children.push(...subArray)
+    })
+    return datas
+  }
+
+  structureData = (data) => {
+    const array = []
+    const _this = this
+    data.map(item => {
+      item.children instanceof Array ?
+        item.children.length > 0 && (function () {
+          item.type = 'fold'
+          let start = null, end = null, itemArray = [], id = `parent-${item.id}`
+          item.children.map(_item => {
+            // 已有的不覆盖
+            !_item.PARENTID && (_item.PARENTID = id)
+            if (_item.start && _item.end) {
+              const { dependencies } = _item
+              let className = _this.getTaskStatus(_item)
+              start ? new Date(start).getTime() > new Date(_item.start).getTime() && (start = _item.start) : (start = _item.start)
+              end ? new Date(end).getTime() < new Date(_item.end).getTime() && (end = _item.end) : (end = _item.end)
+              itemArray.push({ ..._item, dependencies, progress: 100, className })
+            }
+          })
+          itemArray.unshift({ ...item, id, start, end, progress: 100, className: 'fold' })
+          array.push(...itemArray)
+        })()
+        :
+        array.push({ ...item, className: 'fold' })
+    })
+
+    this.ganttData = array
+    return array
+  }
+
   foldGantt = (task) => {
     // 折叠
-    // console.log(this.ganttData, task)
     let { id, isFold = false } = task
     let array = []
-    // isFold ? (array = this.ganttData) : (array = this.ganttData.filter(item => item.dependencies[0] !== id))
     array = this.ganttData.map(item => {
-      item.dependencies[0] === id && (item.hidden = !isFold)
+      if (item.PARENTID === id) {
+        item.hidden = !isFold
+        if (item.subtasklist) {
+          this.ganttData.map(_item => {
+            if (_item.PARENTID === item.id) {
+              if (!isFold) {
+                _item.hidden = true
+              } else {
+                !item.isFold && (_item.hidden = false)
+              }
+            }
+          })
+        }
+      }
       return item
     })
     task.isFold = !task.isFold
