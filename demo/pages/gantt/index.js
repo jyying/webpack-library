@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Gantt from 'frappe-gantt'
-// import 'frappe-gantt/dist/frappe-gantt.css'
+// import Gantt from '../../../library/index.js'
+// import '../../../library/index.css'
 
 import './index.less'
 
@@ -16,20 +17,19 @@ export default class GanttDemo extends Component {
       view_modes: ['Quarter Day', 'Half Day', 'Day', 'Week', 'Month'],
       bar_height: 20,
       bar_corner_radius: 0,
-      view_mode: 'Day',
+      view_mode: 'Month',
       date_format: 'YYYY-MM-DD',
       language: 'en',
       title_width: 200,
       arrow_stroke: 'red',
       on_click: task => {
-        console.log(task)
+        console.log(task, '----------------------')
       },
       on_fold: (task, parent) => {
         // console.log('----------------折叠', task, parent)
         this.foldGantt(task)
       },
     }
-
     this.ganttData = []
   }
 
@@ -44,7 +44,7 @@ export default class GanttDemo extends Component {
         type: 'fold',
       },
     ]
-    const array = this.structureData(this.sortData(data))
+    const array = this.structureData(data)
     this.ganttData = array
     new Gantt("#gantt", array, this.ganttOptions)
   }
@@ -60,25 +60,31 @@ export default class GanttDemo extends Component {
   }
 
   sortData = (data) => {
+    console.log(data)
     const datas = JSON.parse(JSON.stringify(data))
+    return this.getsubArray(datas)
+  }
+
+  modifyArray = (datas, addArray, pre = true) => {
+    const data = JSON.parse(JSON.stringify(datas))
+    let INDEX = 0
+    const Number = pre ? 1 : 0
+    addArray.map(item => {
+      let { index, array } = item
+      data.splice(index + Number + INDEX, 0, ...array)
+      INDEX += array.length
+    })
+    return data
+  }
+
+  getsubArray = (datas) => {
     datas.map((item, index) => {
-      const array = []
+      if (item.children instanceof Array && !item.children.length) return
       const subArray = []
-      item.children.map(_item => {
+      item.children.map((_item, _index) => {
         _item.iid = _item.id
         _item.id = `parent-${_item.id}-${index}`
         let hasSubTask = false
-        if (_item.qzrwgroup) {
-          _item.dependencies = []
-          _item.qzrwgroup.map(s => {
-            const id = `parent-${s.id}-${index}`
-            _item.dependencies.push(id)
-            s.iid = s.id
-            s.id = id
-          })
-          array.push(..._item.qzrwgroup)
-        }
-
         if (_item.subtasklist instanceof Array && _item.subtasklist.length) {
           let time
           hasSubTask = true
@@ -92,35 +98,80 @@ export default class GanttDemo extends Component {
             s.dependencies = [id]
             s.iid = s.id
             s.hiddenArrow = true
+            s.type = 'sub'
           })
-          subArray.push(..._item.subtasklist)
+          subArray.push({
+            index: _index,
+            array: _item.subtasklist,
+          })
         }
         hasSubTask && (_item.type = 'fold')
       })
-
-      item.children.unshift(...array)
-      item.children.push(...subArray)
+      item.children = this.modifyArray(item.children, subArray)
     })
+    return this.getPreArray(datas)
+  }
+
+  getPreArray = (data) => {
+    const datas = JSON.parse(JSON.stringify(data))
+    datas.map(item => {
+      if (item.children instanceof Array && !item.children.length) return
+      const preArray = []
+      item.children.map((_item, _index) => {
+        if (_item.qzrwgroup) {
+          _item.dependencies = []
+          _item.qzrwgroup.map(s => {
+            const id = `parent-${s.id}`
+            _item.dependencies.push(id)
+            s.iid = s.id
+            s.id = id
+            s.type = 'pre'
+          })
+
+          preArray.push({
+            index: _index,
+            array: _item.qzrwgroup,
+          })
+        }
+      })
+      item.children = this.modifyArray(item.children, preArray, false)
+    })
+
+    console.log(datas, '--------------------')
     return datas
+  }
+
+  getIsRepeat = (data, compare) => {
+    console.log(data, compare, '=============================')
+    if (data instanceof Array && data.length > 0) {
+      for (let i = 0; i < data.length; i++) {
+        if (data[i] === compare) {
+          return true
+        }
+      }
+    }
+    return false
   }
 
   structureData = (data) => {
     const array = []
     const _this = this
+    const qzrwgroup = []
     data.map(item => {
       item.children instanceof Array ?
         item.children.length > 0 && (function () {
           item.type = 'fold'
           let start = null, end = null, itemArray = [], id = `parent-${item.id}`
           item.children.map(_item => {
-            // 已有的不覆盖
-            !_item.PARENTID && (_item.PARENTID = id)
             if (_item.start && _item.end) {
-              const { dependencies } = _item
+              if (_item.qzrwgroup instanceof Array && _item.qzrwgroup.length > 0) {
+                _item.qzrwgroup.map(pre => pre.subid = _item.id)
+                qzrwgroup.push(..._item.qzrwgroup)
+              }
               let className = _this.getTaskStatus(_item)
               start ? new Date(start).getTime() > new Date(_item.start).getTime() && (start = _item.start) : (start = _item.start)
               end ? new Date(end).getTime() < new Date(_item.end).getTime() && (end = _item.end) : (end = _item.end)
-              itemArray.push({ ..._item, dependencies, progress: 100, className })
+              itemArray.unshift({ ..._item, iid: _item.id, id: `other-${_item.id}`, progress: 100, className })
             }
           })
           itemArray.unshift({ ...item, id, start, end, progress: 100, className: 'fold' })
@@ -131,7 +182,18 @@ export default class GanttDemo extends Component {
     })
 
     this.ganttData = array
-    return array
+
+    return this.getPreContact(array, qzrwgroup)
+  }
+
+  getPreContact = (datas, preArray) => {
+    let data = JSON.parse(JSON.stringify(datas))
+    preArray.map(item => {
+      data.map(_item => {
+        _item && _item.iid === item.id && (_item.dependencies = [`other-${item.subid}`])
+      })
+    })
+    return data
   }
 
   foldGantt = (task) => {

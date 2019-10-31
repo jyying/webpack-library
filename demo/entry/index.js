@@ -1,12 +1,17 @@
+import 'react-app-polyfill/ie11'
+import 'react-app-polyfill/stable'
+
 import React from 'react'
 import ReactDom from 'react-dom'
 
 import GanttDemo from '../pages/gantt'
-import HtmlDemo from '../pages/html'
+// import HtmlDemo from '../pages/html'
 ReactDom.render(
   <GanttDemo />,
-  document.getElementById('root'),
-  function () {
-    console.log('渲染完成')
-  }
+  document.getElementById('root')
 )
+
+// ReactDom.render(
+//   <div>434</div>,
+//   document.getElementById('root')
+// )

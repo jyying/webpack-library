@@ -86,7 +86,6 @@ export default class Bar {
         });
 
         animateSVG(this.$bar, 'width', 0, this.width);
-
         if (this.invalid) {
             this.$bar.classList.add('bar-invalid');
         }
@@ -370,12 +369,19 @@ export default class Bar {
     update_label_position() {
         const bar = this.$bar,
             label = this.group.querySelector('.bar-label');
-
         if (label.getBBox().width > bar.getWidth()) {
-            label.classList.add('big');
+            if (label.classList) {
+                label.classList.add('big')
+            } else {
+                label.setAttribute('class', 'bar-label big')
+            }
             label.setAttribute('x', bar.getX() + bar.getWidth() + 5);
         } else {
-            label.classList.remove('big');
+            if (label.classList) {
+                label.classList.remove('big');
+            } else {
+                label.setAttribute('class', 'bar-label')
+            }
             label.setAttribute('x', bar.getX() + bar.getWidth() / 2);
         }
     }

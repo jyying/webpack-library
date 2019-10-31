@@ -27,17 +27,12 @@ const _webpack = {
         ]
       },
       {
-        test: /\.sass$/,
-        // exclude: /node_modules/,
-        use: [
-          MiniCssExtractPlugin.loader,
-          "css-loader",
-          "sass-loader"
-        ]
-      },
-      {
         test: /\.js$/,
-        exclude: /node_modules/,
+        // exclude: /node_modules/,
+        include: [
+          path.resolve(__dirname, "demo"),
+          path.resolve(__dirname, "node_modules/frappe-gantt"),
+        ],
         use: [
           {
             loader: 'babel-loader'

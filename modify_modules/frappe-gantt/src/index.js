@@ -67,9 +67,13 @@ export default class Gantt {
         // wrapper element
         this.$container = document.createElement('div');
         this.$container.classList.add('gantt-container');
-
-        const parent_element = this.$svg.parentElement;
+        /**
+         * 兼容ie11
+         * this.$svg.parentElement在ie11下无值
+         */
+        const parent_element = this.$svg.parentElement || element;
         parent_element.appendChild(this.$container);
+        // console.log(this.$svg, '=================', this.$svg.parentElement, element)
         this.$container.appendChild(this.$svg);
 
         // popup wrapper
@@ -911,7 +915,12 @@ export default class Gantt {
 
     unselect_all() {
         [...this.$svg.querySelectorAll('.bar-wrapper')].forEach(el => {
-            el.classList.remove('active');
+            if (el.classList) {
+                el.classList.remove('active');
+            } else {
+                console.log(el.className)
+            }
+
         });
     }
 
