@@ -77,41 +77,6 @@ export default class GanttDemo extends Component {
     return data
   }
 
-  getsubArray = (datas) => {
-    datas.map((item, index) => {
-      if (item.children instanceof Array && !item.children.length) return
-      const subArray = []
-      item.children.map((_item, _index) => {
-        _item.iid = _item.id
-        _item.id = `parent-${_item.id}-${index}`
-        let hasSubTask = false
-        if (_item.subtasklist instanceof Array && _item.subtasklist.length) {
-          let time
-          hasSubTask = true
-          _item.subtasklist.map(s => {
-            const id = _item.id
-            time = s.time.split('/')
-            s.start = time[0]
-            s.end = time[1]
-            s.name = s.sname
-            s.PARENTID = id
-            s.dependencies = [id]
-            s.iid = s.id
-            s.hiddenArrow = true
-            s.type = 'sub'
-          })
-          subArray.push({
-            index: _index,
-            array: _item.subtasklist,
-          })
-        }
-        hasSubTask && (_item.type = 'fold')
-      })
-      item.children = this.modifyArray(item.children, subArray)
-    })
-    return this.getPreArray(datas)
-  }
-
   getPreArray = (data) => {
     const datas = JSON.parse(JSON.stringify(data))
     datas.map(item => {
@@ -153,44 +118,114 @@ export default class GanttDemo extends Component {
     return false
   }
 
-  structureData = (data) => {
-    const array = []
+  getsubArray = (datas) => {
+    datas.map((item, index) => {
+      if (item.children instanceof Array && !item.children.length) return
+      const subArray = []
+      item.children.map((_item, _index) => {
+        _item.iid = _item.id
+        _item.id = `parent-${_item.id}-${index}`
+        let hasSubTask = false
+        if (_item.subtasklist instanceof Array && _item.subtasklist.length) {
+          let time
+          hasSubTask = true
+          _item.subtasklist.map(s => {
+            const id = _item.id
+            time = s.time.split('/')
+            s.start = time[0]
+            s.end = time[1]
+            s.name = s.sname
+            s.PARENTID = id
+            s.dependencies = [id]
+            s.iid = s.id
+            s.hiddenArrow = true
+            s.type = 'sub'
+          })
+          subArray.push({
+            index: _index,
+            array: _item.subtasklist,
+          })
+        }
+        hasSubTask && (_item.type = 'fold')
+      })
+      item.children = this.modifyArray(item.children, subArray)
+    })
+    return this.getPreArray(datas)
+  }
+
+  structureData = (datas) => {
+    const data = JSON.parse(JSON.stringify(datas))
+    let array = []
     const _this = this
     const qzrwgroup = []
+    const subgroup = []
     data.map(item => {
       item.children instanceof Array ?
         item.children.length > 0 && (function () {
           item.type = 'fold'
           let start = null, end = null, itemArray = [], id = `parent-${item.id}`
+
           item.children.map(_item => {
             if (_item.start && _item.end) {
               if (_item.qzrwgroup instanceof Array && _item.qzrwgroup.length > 0) {
                 _item.qzrwgroup.map(pre => pre.subid = _item.id)
                 qzrwgroup.push(..._item.qzrwgroup)
               }
+              if (_item.subtasklist instanceof Array && _item.subtasklist.length > 0) {
+                _item.subtasklist.map(pre => pre.subid = _item.id)
+                subgroup.push(..._item.subtasklist)
+              }
               let className = _this.getTaskStatus(_item)
               start ? new Date(start).getTime() > new Date(_item.start).getTime() && (start = _item.start) : (start = _item.start)
               end ? new Date(end).getTime() < new Date(_item.end).getTime() && (end = _item.end) : (end = _item.end)
-              itemArray.unshift({ ..._item, iid: _item.id, id: `other-${_item.id}`, progress: 100, className })
+              itemArray.push({ ..._item, iid: _item.id, id: `other-${_item.id}`, progress: 100, className, PARENTID: item.id })
             }
           })
-          itemArray.unshift({ ...item, id, start, end, progress: 100, className: 'fold' })
+
+          itemArray.unshift({ ...item, id, iid: item.id, start, end, progress: 100, className: 'fold' })
           array.push(...itemArray)
+
         })()
         :
-        array.push({ ...item, className: 'fold' })
+        array.push({ ...item, className: 'fold', iid: item.id })
     })
-
+    array = this.getSubContact(this.getPreContact(array, qzrwgroup), subgroup)
     this.ganttData = array
+    console.log(array)
+    return array
+  }
 
-    return this.getPreContact(array, qzrwgroup)
+  getSubContact = (datas, subArray) => {
+    let data = JSON.parse(JSON.stringify(datas))
+    const prentArray = []
+    subArray.map(item => {
+      data.map(_item => {
+        if (_item && _item.iid === item.id) {
+          _item.dependencies = [`other-${item.subid}`]
+          _item.hiddenArrow = true
+          _item.type = 'sub'
+          _item.PARENTID = item.subid
+          prentArray.push(item.subid)
+        }
+      })
+    })
+    prentArray.map(item => {
+      data.map(_item => _item.iid === item && (_item.type = 'fold'))
+    })
+    return data
   }
 
   getPreContact = (datas, preArray) => {
     let data = JSON.parse(JSON.stringify(datas))
     preArray.map(item => {
       data.map(_item => {
-        _item && _item.iid === item.id && (_item.dependencies = [`other-${item.subid}`])
+        if (_item && _item.iid === item.subid) {
+          if (!(_item.dependencies instanceof Array)) {
+            _item.dependencies = [`other-${item.id}`]
+          } else {
+            _item.dependencies.push(`other-${item.id}`)
+          }
+        }
       })
     })
     return data
@@ -198,14 +233,14 @@ export default class GanttDemo extends Component {
 
   foldGantt = (task) => {
     // 折叠
-    let { id, isFold = false } = task
+    let { id, iid, isFold = false } = task
     let array = []
     array = this.ganttData.map(item => {
-      if (item.PARENTID === id) {
+      if (item.PARENTID === iid) {
         item.hidden = !isFold
-        if (item.subtasklist) {
+        if (item.subtasklist instanceof Array && item.subtasklist.length) {
           this.ganttData.map(_item => {
-            if (_item.PARENTID === item.id) {
+            if (_item.PARENTID === item.iid) {
               if (!isFold) {
                 _item.hidden = true
               } else {
