@@ -9,6 +9,7 @@ import '../dist/frappe-gantt.css'
 
 export default class Gantt {
     constructor(wrapper, tasks, options) {
+        console.log(tasks)
         this.setup_wrapper(wrapper);
         this.setup_options(options);
         // 筛选一次，hidden
@@ -17,6 +18,17 @@ export default class Gantt {
         // initialize with default view mode
         this.change_view_mode();
         // this.bind_events();
+    }
+
+    classList(element, type, className) {
+        console.log(element, type, className)
+        if (element.classList) {
+            element.classList[type](className)
+            return
+        }
+        if (type === 'add') {
+            element.setAttribute('class', className)
+        }
     }
 
     setup_wrapper(element) {
@@ -48,7 +60,7 @@ export default class Gantt {
             });
         } else {
             this.$svg = svg_element;
-            this.$svg.classList.add('gantt');
+            this.classList(this.$svg, 'add', 'gantt')
         }
         // 判断创建
         if (element.querySelector('.gantt-title-view')) {
@@ -57,16 +69,16 @@ export default class Gantt {
             this.gantt_title = this.gantt_title_view.querySelector('.gantt-title');
         } else {
             this.gantt_title_view = document.createElement('div');
-            this.gantt_title_view.classList.add('gantt-title-view');
+            this.classList(this.gantt_title_view, 'add', 'gantt-title-view')
             element.appendChild(this.gantt_title_view);
             this.gantt_title = document.createElement('div');
-            this.gantt_title.classList.add('gantt-title');
+            this.classList(this.gantt_title, 'add', 'gantt-title')
             this.gantt_title_view.appendChild(this.gantt_title)
         }
 
         // wrapper element
         this.$container = document.createElement('div');
-        this.$container.classList.add('gantt-container');
+        this.classList(this.$container, 'add', 'gantt-container')
         /**
          * 兼容ie11
          * this.$svg.parentElement在ie11下无值
@@ -78,7 +90,7 @@ export default class Gantt {
 
         // popup wrapper
         this.popup_wrapper = document.createElement('div');
-        this.popup_wrapper.classList.add('popup-wrapper');
+        this.classList(this.popup_wrapper, 'add', 'popup-wrapper')
         this.$container.appendChild(this.popup_wrapper);
     }
 
@@ -597,14 +609,15 @@ export default class Gantt {
             let padding = 20
             const div = document.createElement('div')
             const title_height = this.options.bar_height + this.options.padding + 'px'
-            const dependencies = task.dependencies
-            div.classList.add('title-li')
+            const { dependencies, type } = task
+            this.classList(div, 'add', 'title-li')
             div.innerHTML = task.name
             div.addEventListener('click', _ => {
                 this.trigger_event('click', [task])
             })
+            // console.log(task)
             // 左边间距距离计算
-            if (dependencies instanceof Array && dependencies.length) {
+            if (type === 'sub' && dependencies instanceof Array && dependencies.length) {
                 for (let i = 0; i < dependencies.length; i++) {
                     let parent = $(`#${dependencies[i]}`)
                     if (parent) {
@@ -615,9 +628,10 @@ export default class Gantt {
                     }
                 }
             }
+
             if (task.type === 'fold') {
                 const span = document.createElement('span')
-                span.classList.add('fold_span')
+                this.classList(span, 'add', 'fold_span')
                 span.innerHTML = task.isFold ? '+' : '-'
                 span.addEventListener('click', (e) => {
                     e.stopPropagation()
@@ -625,7 +639,7 @@ export default class Gantt {
                 })
                 span.style.width = padding + 'px'
                 div.appendChild(span)
-                div.classList.add('parent')
+                this.classList(div, 'add', 'parent')
             }
             div.id = task.id
             div.style.lineHeight = title_height
@@ -639,21 +653,22 @@ export default class Gantt {
         this.arrows = [];
         for (let task of this.tasks) {
             let arrows = [];
-            if (task.hiddenArrow) break
-            arrows = task.dependencies
-                .map(task_id => {
-                    const dependency = this.get_task(task_id);
-                    if (!dependency) return;
-                    const arrow = new Arrow(
-                        this,
-                        this.bars[dependency._index], // from_task
-                        this.bars[task._index] // to_task
-                    );
-                    this.layers.arrow.appendChild(arrow.element);
-                    return arrow;
-                })
-                .filter(Boolean); // filter falsy values
-            this.arrows = this.arrows.concat(arrows);
+            if (!task.hiddenArrow) {
+                arrows = task.dependencies
+                    .map(task_id => {
+                        const dependency = this.get_task(task_id);
+                        if (!dependency) return;
+                        const arrow = new Arrow(
+                            this,
+                            this.bars[dependency._index], // from_task
+                            this.bars[task._index] // to_task
+                        );
+                        this.layers.arrow.appendChild(arrow.element);
+                        return arrow;
+                    })
+                    .filter(Boolean); // filter falsy values
+                this.arrows = this.arrows.concat(arrows);
+            }
         }
     }
 
@@ -734,7 +749,7 @@ export default class Gantt {
                 is_dragging = true;
             }
 
-            bar_wrapper.classList.add('active');
+            this.classList(bar_wrapper, 'add', 'active')
 
             x_on_start = e.offsetX;
             y_on_start = e.offsetY;

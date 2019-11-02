@@ -186,8 +186,9 @@ export default class Bar {
             }
 
             this.gantt.unselect_all();
-            this.group.classList.toggle('active');
-
+            if (this.group.classList) {
+                this.group.classList.toggle('active');
+            }
             // this.show_popup(); // 显示气泡
         });
     }

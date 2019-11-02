@@ -11,8 +11,11 @@ export function createSVG(tag, attrs) {
             const parent = attrs.append_to;
             parent.appendChild(elem);
         } else if (attr === 'innerHTML') {
-            // console.log(elem, attrs)
-            elem.innerHTML = attrs.innerHTML;
+            if(elem.innerHTML) {
+                elem.innerHTML = attrs.innerHTML;
+            } else {
+                elem.textContent = attrs.innerHTML
+            }
         } else {
             elem.setAttribute(attr, attrs[attr]);
         }

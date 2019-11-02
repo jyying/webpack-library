@@ -164,7 +164,6 @@ export default class GanttDemo extends Component {
         item.children.length > 0 && (function () {
           item.type = 'fold'
           let start = null, end = null, itemArray = [], id = `parent-${item.id}`
-
           item.children.map(_item => {
             if (_item.start && _item.end) {
               if (_item.qzrwgroup instanceof Array && _item.qzrwgroup.length > 0) {
@@ -191,7 +190,6 @@ export default class GanttDemo extends Component {
     })
     array = this.getSubContact(this.getPreContact(array, qzrwgroup), subgroup)
     this.ganttData = array
-    console.log(array)
     return array
   }
 
