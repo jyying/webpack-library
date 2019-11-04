@@ -113,7 +113,7 @@ export default {
             HH: values[3],
             mm: values[4],
             ss: values[5],
-            SSS:values[6],
+            SSS: values[6],
             D: values[2],
             MMMM: month_names[lang][+values[1]],
             MMM: month_names[lang][+values[1]]
@@ -125,7 +125,7 @@ export default {
         Object.keys(format_map)
             .sort((a, b) => b.length - a.length) // big string first
             .forEach(key => {
-                if (str.includes(key)) {
+                if (str.includes ? str.includes(key) : str.indexOf(key) !== -1) {
                     str = str.replace(key, `$${formatted_values.length}`);
                     formatted_values.push(format_map[key]);
                 }
@@ -149,7 +149,7 @@ export default {
         months = days / 30;
         years = months / 12;
 
-        if (!scale.endsWith('s')) {
+        if (scale.endsWith ? !scale.endsWith('s') : !/s{1}$/.test(scale)) {
             scale += 's';
         }
 

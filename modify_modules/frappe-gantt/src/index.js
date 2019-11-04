@@ -9,7 +9,6 @@ import '../dist/frappe-gantt.css'
 
 export default class Gantt {
     constructor(wrapper, tasks, options) {
-        console.log(tasks)
         this.setup_wrapper(wrapper);
         this.setup_options(options);
         // 筛选一次，hidden
@@ -21,7 +20,6 @@ export default class Gantt {
     }
 
     classList(element, type, className) {
-        console.log(element, type, className)
         if (element.classList) {
             element.classList[type](className)
             return
@@ -889,7 +887,8 @@ export default class Gantt {
             }, []);
 
             out = out.concat(deps);
-            to_process = deps.filter(d => !to_process.includes(d));
+            // to_process = deps.filter(d => !to_process.includes(d));
+            to_process = deps.filter(d => !(to_process.indexOf(d) === -1));
         }
 
         return out.filter(Boolean);
@@ -952,15 +951,39 @@ export default class Gantt {
     }
 
     get_task(id) {
-        return this.tasks.find(task => {
-            return task.id === id;
-        });
+        let task = {}
+        if (this.tasks.find) {
+            return this.tasks.find(task => {
+                return task.id === id;
+            })
+        } else {
+            for (let i = 0; i < this.tasks.length; i++) {
+                if (this.tasks[i].id === id) {
+                    task = this.tasks[i]
+                    break
+                }
+            }
+
+            return task
+        }
     }
 
     get_bar(id) {
-        return this.bars.find(bar => {
-            return bar.task.id === id;
-        });
+        let bar = {}
+        if (this.bars.find) {
+            return this.bars.find(bar => {
+                return bar.task.id === id;
+            })
+        } else {
+            for (let i = 0; i < this.bars.length; i++) {
+                if (this.bars[i].task.id === id) {
+                    bar = this.bars[i]
+                    break
+                }
+            }
+
+            return bar
+        }
     }
 
     show_popup(options) {
