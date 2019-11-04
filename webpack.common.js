@@ -30,7 +30,7 @@ const _webpack = {
         test: /\.js$/,
         // exclude: /node_modules/,
         include: [
-          path.resolve(__dirname, "demo"),
+          path.resolve(__dirname, "index.js"),
           path.resolve(__dirname, "node_modules/frappe-gantt"),
         ],
         use: [

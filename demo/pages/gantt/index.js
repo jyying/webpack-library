@@ -44,8 +44,9 @@ export default class GanttDemo extends Component {
         type: 'fold',
       },
     ]
-    const array = this.structureData(data)
+    const array = this.structureData(this.getsubArray(data))
     this.ganttData = array
+    console.log(array)
     new Gantt("#gantt", array, this.ganttOptions)
   }
 
@@ -60,7 +61,6 @@ export default class GanttDemo extends Component {
   }
 
   sortData = (data) => {
-    console.log(data)
     const datas = JSON.parse(JSON.stringify(data))
     return this.getsubArray(datas)
   }
@@ -119,38 +119,27 @@ export default class GanttDemo extends Component {
   }
 
   getsubArray = (datas) => {
-    datas.map((item, index) => {
+    datas.map(item => {
       if (item.children instanceof Array && !item.children.length) return
       const subArray = []
       item.children.map((_item, _index) => {
-        _item.iid = _item.id
-        _item.id = `parent-${_item.id}-${index}`
-        let hasSubTask = false
         if (_item.subtasklist instanceof Array && _item.subtasklist.length) {
           let time
-          hasSubTask = true
           _item.subtasklist.map(s => {
-            const id = _item.id
             time = s.time.split('/')
             s.start = time[0]
             s.end = time[1]
             s.name = s.sname
-            s.PARENTID = id
-            s.dependencies = [id]
-            s.iid = s.id
-            s.hiddenArrow = true
-            s.type = 'sub'
           })
           subArray.push({
             index: _index,
             array: _item.subtasklist,
           })
         }
-        hasSubTask && (_item.type = 'fold')
       })
       item.children = this.modifyArray(item.children, subArray)
     })
-    return this.getPreArray(datas)
+    return datas
   }
 
   structureData = (datas) => {
