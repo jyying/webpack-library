@@ -7,7 +7,8 @@
     "dev": "cross-env NODE_ENV=development node server/dev-server",
     "prod": "cross-env NODE_ENV=development webpack --config webpack.common.js",
     "build": "cross-env NODE_ENV=production webpack --config webpack.common.js",
-    "demo": "cross-env NODE_ENV=development webpack --config webpack.common.js"
+    "demo": "cross-env NODE_ENV=development webpack --config webpack.common.js",
+    "library": "cross-env rollup --config rollup.config.js"
   },
   "author": "",
   "license": "ISC",
@@ -39,8 +40,11 @@
     "less-loader": "^5.0.0",
     "mini-css-extract-plugin": "^0.8.0",
     "node-sass": "^4.12.0",
+    "rollup": "^1.26.3",
+    "rollup-plugin-node-resolve": "^5.2.0",
     "sass": "^1.22.10",
     "sass-loader": "^7.3.1",
+    "the-answer": "^1.0.0",
     "webpack": "^4.39.1",
     "webpack-cli": "^3.3.6",
     "webpack-dev-middleware": "^3.7.0",

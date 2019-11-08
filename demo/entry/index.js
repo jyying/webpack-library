@@ -4,14 +4,15 @@ import 'react-app-polyfill/stable'
 import React from 'react'
 import ReactDom from 'react-dom'
 
-import GanttDemo from '../pages/gantt'
+// import GanttDemo from '../pages/gantt'
 // import HtmlDemo from '../pages/html'
+import StyleHash from '../pages/stylehash'
 ReactDom.render(
-  <GanttDemo />,
+  <StyleHash />,
   document.getElementById('root')
 )
 
-// ReactDom.render(
+// ReactDom.render( 
 //   <div>434</div>,
 //   document.getElementById('root')
 // )
