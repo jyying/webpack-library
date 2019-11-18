@@ -155,6 +155,7 @@ export default class GanttDemo extends Component {
           let start = null, end = null, itemArray = [], id = `parent-${item.id}`
           item.children.map(_item => {
             if (_item.start && _item.end) {
+              const { swcbfb = Math.floor(Math.random() * 100) } = _item
               if (_item.qzrwgroup instanceof Array && _item.qzrwgroup.length > 0) {
                 _item.qzrwgroup.map(pre => pre.subid = _item.id)
                 qzrwgroup.push(..._item.qzrwgroup)
@@ -163,6 +164,9 @@ export default class GanttDemo extends Component {
                 _item.subtasklist.map(pre => pre.subid = _item.id)
                 subgroup.push(..._item.subtasklist)
               }
+              console.log(_item)
+              _item.title_name = _item.name
+              _item.name = `${_item.title_name} ${swcbfb}%`
               let className = _this.getTaskStatus(_item)
               start ? new Date(start).getTime() > new Date(_item.start).getTime() && (start = _item.start) : (start = _item.start)
               end ? new Date(end).getTime() < new Date(_item.end).getTime() && (end = _item.end) : (end = _item.end)

@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "antd": "^3.25.1",
     "frappe-gantt": "^0.3.0",
     "react": "15.6.0",
     "react-app-polyfill": "^1.0.4",
