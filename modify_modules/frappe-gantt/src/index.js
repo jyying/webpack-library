@@ -609,7 +609,7 @@ export default class Gantt {
             const title_height = this.options.bar_height + this.options.padding + 'px'
             const { dependencies, type } = task
             this.classList(div, 'add', 'title-li')
-            div.innerHTML = task.name
+            div.innerHTML = task.title_name || task.name
             div.addEventListener('click', _ => {
                 this.trigger_event('click', [task])
             })
