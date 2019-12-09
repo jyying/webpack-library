@@ -4,11 +4,19 @@ import 'react-app-polyfill/stable'
 import React from 'react'
 import ReactDom from 'react-dom'
 
+import { HashRouter as Router, Route, Switch } from 'react-router-dom'
+
 import GanttDemo from '../pages/gantt'
-// import HtmlDemo from '../pages/html'
-// import StyleHash from '../pages/stylehash'
+import HtmlDemo from '../pages/html'
+import StyleHash from '../pages/stylehash'
 ReactDom.render(
-  <GanttDemo />,
+  <Router>
+    <HtmlDemo>
+      <Route path="/style" component={StyleHash} />
+      <Route path="/gantt" component={GanttDemo} />
+    </HtmlDemo>
+  </Router>
+  ,
   document.getElementById('root')
 )
 

@@ -1,7 +1,5 @@
 import React, { Component } from 'react'
 import Gantt from 'frappe-gantt'
-// import Gantt from '../../../library/index.js'
-// import '../../../library/index.css'
 
 import './index.less'
 
