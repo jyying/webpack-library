@@ -6,14 +6,21 @@ import ReactDom from 'react-dom'
 
 import { HashRouter as Router, Route, Switch } from 'react-router-dom'
 
-import GanttDemo from '../pages/gantt'
 import HtmlDemo from '../pages/html'
-import StyleHash from '../pages/stylehash'
+
+import router from '../router'
+
 ReactDom.render(
   <Router>
     <HtmlDemo>
-      <Route path="/style" component={StyleHash} />
-      <Route path="/gantt" component={GanttDemo} />
+      <Switch>
+        {
+          router.map(item => {
+            let component = item.component
+            return <Route key={item.path} path={item.path} component={component} />
+          })
+        }
+      </Switch>
     </HtmlDemo>
   </Router>
   ,

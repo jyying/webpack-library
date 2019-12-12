@@ -1,4 +1,5 @@
 import React, { Component, cloneElement } from 'react'
+import { Link } from 'react-router-dom'
 
 export default class AntdDemo extends Component {
   render() {
@@ -7,6 +8,8 @@ export default class AntdDemo extends Component {
     return (
       <div>
         htmldemo
+        <Link to="style">style</Link> || 
+        <Link to="gantt">gantt</Link>
         {
           children && (
             children instanceof Array ?

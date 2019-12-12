@@ -11,7 +11,8 @@ module.exports = {
   output: {
     filename: '[name].[hash].bundle.js',
     path: path.resolve(__dirname, 'dist'),
-    publicPath: '/'
+    publicPath: '/',
+    chunkFilename: "[name][id][hash].js",
   },
   plugins: [
     // new webpack.DefinePlugin({

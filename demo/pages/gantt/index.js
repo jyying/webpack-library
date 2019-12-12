@@ -44,7 +44,6 @@ export default class GanttDemo extends Component {
     ]
     const array = this.structureData(this.getsubArray(data))
     this.ganttData = array
-    console.log(array)
     new Gantt("#gantt", array, this.ganttOptions)
   }
 
@@ -162,7 +161,6 @@ export default class GanttDemo extends Component {
                 _item.subtasklist.map(pre => pre.subid = _item.id)
                 subgroup.push(..._item.subtasklist)
               }
-              console.log(_item)
               _item.title_name = _item.name
               _item.name = `${_item.title_name} ${swcbfb}%`
               let className = _this.getTaskStatus(_item)
