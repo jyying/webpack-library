@@ -5,6 +5,20 @@ export function structureComponent(load, props) {
   return <Component {...props} />
 }
 
+export function wrapper(load, props) {
+  let Child = null
+  let Wrapped = () => (
+    <Child />
+  )
+  console.log('----------------------')
+  return async () => {
+    Child = await load()
+    console.log(Child.default)
+    console.log('======================')
+    return Wrapped
+  }
+}
+
 export const AsyncComponent = (load) => {
   return class AsyncComponent extends Component {
 

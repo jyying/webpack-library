@@ -47,12 +47,15 @@ export default class StyleHash extends Component {
     })
   }
 
+  componentDidMount() {
+    // window.addEventListener('scroll', (e) => console.log(this, '============', e.target.documentElement.scrollTop))
+  }
+
   render() {
     console.log('render------------------------------', this.state)
     const { ue, height } = this.state
     return (
       <div className={styles.names}>
-        style
         <div className="name">{this.props.data}</div>
 
         <p>名称：{ue.name}</p>
