@@ -1,0 +1,54 @@
+@import '../print.less';
+.implement {
+  overflow: hidden;
+  border: @borderStyle;
+  border-bottom: none;
+  border-top: none;
+  &  > div {
+
+    &.float-left, &.float-right {
+      width: 50%;
+
+      & > .div-row-view {
+        border-right: none;
+        border-left: none;
+        .float-left {
+          width: 40%;
+        }
+        .float-right {
+          width: 60%;
+        }
+      }
+    }
+
+    &.float-left {
+      float: left;
+      border-right: @borderStyle;
+    }
+    &.float-right {
+      float: right;
+    }
+  }
+}
+.implement-view {
+  &.print-content {
+    overflow: auto;
+
+    .info {
+      min-height: 65px;
+    }
+  }
+  .desc {
+    height: 25px;
+    line-height: 25px;
+  }
+  .div-row-view {
+    div {
+      min-height: 35px;
+      line-height: 35px;
+    }
+    .info {
+      border-top: none;
+    }
+  }
+}

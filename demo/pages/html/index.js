@@ -1,6 +1,8 @@
 import React, { Component, cloneElement } from 'react'
 import { Link } from 'react-router-dom'
 
+import '../stylehash/index.less'
+
 export default class AntdDemo extends Component {
   render() {
     console.log(this.props.children)

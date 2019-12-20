@@ -24,15 +24,12 @@ const _webpack = {
           MiniCssExtractPlugin.loader,
           {
             loader: "css-loader",
-            options: {
-              modules: true,
-            }
           },
           "less-loader"
         ]
       },
       {
-        test: /\.js$/,
+        test: /\.js|jsx$/,
         // exclude: /node_modules/,
         include: [
           path.resolve(__dirname, "demo"),
@@ -47,11 +44,12 @@ const _webpack = {
       }
     ]
   },
-  // resolve: {
-  //   alias: {
-  //     '@ant-design/icons/lib/dist$': path.resolve(__dirname, './src/config/icons.js')
-  //   }
-  // },
+  resolve: {
+    // extensions: ['', '.js', '.jsx', '.jpg', '.png'],
+    // alias: {
+    //   '@ant-design/icons/lib/dist$': path.resolve(__dirname, './src/config/icons.js')
+    // }
+  },
   plugins: [
     new MiniCssExtractPlugin({
       filename: '[name].css',

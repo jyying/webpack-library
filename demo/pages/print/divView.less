@@ -1,0 +1,60 @@
+@import './print.less';
+
+.div-row-view {
+  // width: 80%;
+  margin: 0 auto;
+  overflow: hidden;
+  border: @borderStyle;
+  border-bottom: none;
+  div {
+    min-height: @rowHeight;
+    line-height: @rowHeight;
+  }
+  .float-left {
+    text-align: center;
+    width: 20%;
+    float: left;
+  }
+  .float-right {
+    text-align: left;
+    width: 80%;
+    float: right;
+    border-left: @borderStyle;
+
+    &.space {
+      padding-left: 15px;
+    }
+
+    .div-row-view {
+      border: none;
+    }
+
+  }
+
+  &.special {
+    border-top: @borderStyle !important;
+    & > .float-left, & > .float-right {
+      width: 50%;
+      .div-row-view {
+        .float-left {
+          width: 40%;
+        }
+        .float-right {
+          width: 60%;
+        }
+      }
+    }
+  }
+
+  .tag {
+    text-decoration: underline;
+  }
+
+  .info {
+    border-top: @borderStyle;
+  }
+
+  // &.minHeight {
+  //   min-height: 80px;
+  // }
+}
