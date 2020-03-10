@@ -66,6 +66,8 @@ export default class StyleHash extends Component {
         <button onClick={this.noChange}>无变化</button>
         <button onClick={this.changeHeight.bind(this, 190)}>变化高</button>
         <button onClick={this.changeHeight}>无变化</button>
+
+        <iframe src="http://localhost:8101/vpplatweb/#/entityparam/list/{istatusid:5}/7/162?_k=sktqif"></iframe>
       </div>
     )
   }

@@ -41,7 +41,11 @@ const _webpack = {
           },
           "babel-loader",
         ]
-      }
+      },
+      {
+        test: /\.(png|jpg|gif|eot|svg|ttf|woff|woff2)\??.*$/,
+        loader: 'url-loader?limit=8192&name=images/[hash:5].[name].[ext]'
+      },
     ]
   },
   resolve: {
