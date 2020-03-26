@@ -1,6 +1,7 @@
 const path = require('path')
 module.exports = {
   mode: 'production',
+  // mode: 'development',
   entry: {
     index: [path.resolve('./index.js')]
   },
@@ -14,7 +15,8 @@ module.exports = {
      * 所以暴露的文件可以写成 export default {} 形式
      * 否则只能导出一个
      */
-    libraryExport: "default",
+    // library: 'Drags',
+    libraryExport: "drag",
     libraryTarget: "umd",
     umdNamedDefine: true
   },

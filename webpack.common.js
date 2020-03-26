@@ -33,6 +33,8 @@ const _webpack = {
         // exclude: /node_modules/,
         include: [
           path.resolve(__dirname, "demo"),
+          path.resolve(__dirname, "components"),
+          path.resolve(__dirname, "containers"),
           path.resolve(__dirname, "node_modules/frappe-gantt"),
         ],
         use: [
@@ -49,10 +51,14 @@ const _webpack = {
     ]
   },
   resolve: {
-    // extensions: ['', '.js', '.jsx', '.jpg', '.png'],
+    // extensions: ['.js', '.jsx'],
     // alias: {
     //   '@ant-design/icons/lib/dist$': path.resolve(__dirname, './src/config/icons.js')
     // }
+    alias: {
+      components: path.join(__dirname, 'components'),
+      containers: path.join(__dirname, 'containers'),
+    }
   },
   plugins: [
     new MiniCssExtractPlugin({

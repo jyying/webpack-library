@@ -25,5 +25,11 @@ export default [
     component(props) {
       return structureComponent(() => import('./pages/print/planPrint.jsx'), props)
     },
+  },
+  {
+    path: "/draggable",
+    component(props) {
+      return structureComponent(() => import('./pages/draggable/index.js'), props)
+    },
   }
 ]

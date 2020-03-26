@@ -1,0 +1,45 @@
+.drag-item {
+  position: relative;
+  margin-bottom: 10px;
+  background: #fff;
+  border: 1px solid #e7eaec;
+  padding: 10px;
+  color:#333;
+  cursor: move;
+
+  .item-title,
+  .item-footer
+  {
+    position: relative;
+    overflow: hidden;
+    color: #666;
+  }
+
+  .item-title .edit {
+    cursor: pointer;
+  }
+
+  .item-info {
+    margin:5px 0;
+
+    &.task {
+      font-size: 14px;
+      color: #888888;
+    }
+  }
+
+  .item-footer {
+    .item-time {
+      height: 20px;
+      line-height: 20px;
+    }
+    span {
+      margin-left:5px;
+    }
+    .item-icon img {
+      display: block;
+      width:20px;
+      height:20px;
+    }
+  }
+}
