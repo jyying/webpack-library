@@ -3,9 +3,15 @@ const merge = require('webpack-merge')
 
 // 合并css
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const exWebpack = process.env.NODE_ENV === 'development' ?
-  require('./webpack.dev') :
-  require('./webpack.prod')
+let exWebpack = {}
+console.log(process.env.NODE_ENV)
+if (process.env.NODE_ENV === 'development') {
+  exWebpack = require('./webpack.dev')
+} else if (process.env.NODE_ENV === 'library') {
+  exWebpack = require('./webpack.library')
+} else {
+  exWebpack = require('./webpack.prod')
+}
 
 const _webpack = {
   module: {

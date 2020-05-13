@@ -1,3 +1,4 @@
+/** 异步加载 */
 import React, { Component } from 'react'
 
 export function structureComponent(load, props) {
