@@ -15,7 +15,7 @@ export default class GanttDemo extends Component {
       view_modes: ['Quarter Day', 'Half Day', 'Day', 'Week', 'Month'],
       bar_height: 20,
       bar_corner_radius: 0,
-      view_mode: 'Month',
+      view_mode: 'Day', // Month Day Year
       date_format: 'YYYY-MM-DD',
       language: 'en',
       title_width: 200,

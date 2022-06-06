@@ -65,12 +65,19 @@ export default class Gantt {
             // title
             this.gantt_title_view = element.querySelector('.gantt-title-view');
             this.gantt_title = this.gantt_title_view.querySelector('.gantt-title');
+            this.gantt_name = this.gantt_title_view.querySelector('.gantt-name');
         } else {
+            // 新加一个崭新总标题
+            this.gantt_name = document.createElement('div');
+            this.classList(this.gantt_name, 'add', 'gantt-name')
+            // end
             this.gantt_title_view = document.createElement('div');
             this.classList(this.gantt_title_view, 'add', 'gantt-title-view')
             element.appendChild(this.gantt_title_view);
             this.gantt_title = document.createElement('div');
             this.classList(this.gantt_title, 'add', 'gantt-title')
+
+            this.gantt_title_view.appendChild(this.gantt_name)
             this.gantt_title_view.appendChild(this.gantt_title)
         }
 
@@ -397,7 +404,8 @@ export default class Gantt {
             class: 'grid-header',
             append_to: this.layers.grid
         });
-        this.gantt_title.style.paddingTop = header_height + 'px'
+        // this.gantt_title.style.paddingTop = header_height + 'px'
+        this.gantt_name.style.height = header_height + 'px'
     }
 
     make_grid_ticks() {
@@ -615,7 +623,11 @@ export default class Gantt {
             })
             // console.log(task)
             // 左边间距距离计算
-            if (type === 'sub' && dependencies instanceof Array && dependencies.length) {
+            if (
+                type === 'sub' &&
+                dependencies instanceof Array &&
+                dependencies.length
+            ) {
                 for (let i = 0; i < dependencies.length; i++) {
                     let parent = $(`#${dependencies[i]}`)
                     if (parent) {
