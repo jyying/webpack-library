@@ -64,6 +64,7 @@ const _webpack = {
     alias: {
       components: path.join(__dirname, 'components'),
       containers: path.join(__dirname, 'containers'),
+      'frappe-gantt': path.join(__dirname, 'modify_modules/frappe-gantt'),
     }
   },
   plugins: [
