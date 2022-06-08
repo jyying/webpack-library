@@ -362,32 +362,33 @@ export default class Gantt {
     }
 
     make_grid_rows() {
-        const rows_layer = createSVG('g', { append_to: this.layers.grid });
-        const lines_layer = createSVG('g', { append_to: this.layers.grid });
+        // const rows_layer = createSVG('g', { append_to: this.layers.grid });
+        // const lines_layer = createSVG('g', { append_to: this.layers.grid });
 
-        const row_width = this.dates.length * this.options.column_width;
-        const row_height = this.options.bar_height + this.options.padding;
+        // const row_width = this.dates.length * this.options.column_width;
+        // const row_height = this.options.bar_height + this.options.padding;
 
         let row_y = this.options.header_height + this.options.padding / 2;
 
         for (let task of this.tasks) {
-            createSVG('rect', {
-                x: 0,
-                y: row_y,
-                width: row_width,
-                height: row_height,
-                class: 'grid-row',
-                append_to: rows_layer
-            });
+            // 暂时去除
+            // createSVG('rect', {
+            //     x: 0,
+            //     y: row_y,
+            //     width: row_width,
+            //     height: 0,
+            //     class: 'grid-row',
+            //     append_to: rows_layer
+            // });
 
-            createSVG('line', {
-                x1: 0,
-                y1: row_y + row_height,
-                x2: row_width,
-                y2: row_y + row_height,
-                class: 'row-line',
-                append_to: lines_layer
-            });
+            // createSVG('line', {
+            //     x1: 0,
+            //     y1: row_y + row_height,
+            //     x2: row_width,
+            //     y2: row_y + row_height,
+            //     class: 'row-line',
+            //     append_to: lines_layer
+            // });
 
             row_y += this.options.bar_height + this.options.padding;
         }
@@ -395,6 +396,7 @@ export default class Gantt {
 
     make_grid_header() {
         const header_width = this.dates.length * this.options.column_width;
+        // 此处 +10 是给具体日期腾出位置
         const header_height = this.options.header_height + 10;
         createSVG('rect', {
             x: 0,
@@ -404,7 +406,6 @@ export default class Gantt {
             class: 'grid-header',
             append_to: this.layers.grid
         });
-        // this.gantt_title.style.paddingTop = header_height + 'px'
         this.gantt_name.style.height = header_height + 'px'
     }
 
@@ -415,12 +416,22 @@ export default class Gantt {
             (this.options.bar_height + this.options.padding) *
             this.tasks.length;
 
+        const path_layer = createSVG('g', { append_to: this.layers.grid });
+        const lines_layer = createSVG('g', { append_to: this.layers.grid });
+
+        const pathWidth = this.options.column_width
+        const pathLineY = tick_height + this.options.header_height + 9
+
         for (let date of this.dates) {
             let tick_class = 'tick';
+
+            // path 绘制
+            let d = `M ${tick_x} ${tick_y} v ${tick_height}`
+
             // thick tick for monday
-            if (this.view_is('Day') && date.getDate() === 1) {
-                tick_class += ' thick';
-            }
+            // if (this.view_is('Day') && date.getDate() === 1) {
+            //     tick_class += ' thick';
+            // }
             // thick tick for first week
             if (
                 this.view_is('Week') &&
@@ -434,11 +445,40 @@ export default class Gantt {
                 tick_class += ' thick';
             }
 
-            createSVG('path', {
-                d: `M ${tick_x} ${tick_y} v ${tick_height}`,
-                class: tick_class,
-                append_to: this.layers.grid
-            });
+            // 周末特殊处理
+            if (this.view_is('Day') && (
+                date.getDay() === 6
+                ||
+                date.getDay() === 0
+                ||
+                date.getDay() === 1
+            )) {
+
+                tick_class += ' thick';
+
+                d = `M ${tick_x} ${tick_y} h ${pathWidth} v ${tick_height} h -${pathWidth} Z`
+
+                if (
+                    date.getDay() === 6
+                    ||
+                    date.getDay() === 0
+                ) {
+                    createSVG('path', {
+                        d,
+                        class: tick_class,
+                        append_to: path_layer
+                    });
+                }
+
+                createSVG('line', {
+                    x1: tick_x,
+                    y1: this.options.header_height + 10,
+                    x2: tick_x + 0.4,
+                    y2: pathLineY,
+                    class: 'path-line',
+                    append_to: lines_layer
+                });
+            }
 
             if (this.view_is('Month')) {
                 tick_x +=
@@ -621,7 +661,6 @@ export default class Gantt {
             div.addEventListener('click', _ => {
                 this.trigger_event('click', [task])
             })
-            // console.log(task)
             // 左边间距距离计算
             if (
                 type === 'sub' &&
@@ -696,7 +735,7 @@ export default class Gantt {
     set_width() {
         const cur_width = this.$svg.getBoundingClientRect().width;
         const actual_width = this.$svg
-            .querySelector('.grid .grid-row')
+            .querySelector('.grid .grid-header')
             .getAttribute('width');
         if (cur_width < actual_width) {
             this.$svg.setAttribute('width', actual_width);
